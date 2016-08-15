@@ -7,6 +7,8 @@ import com.akefirad.wharfie.payloads.ErrorsResponse.Error;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 import org.json.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.*;
 
 import java.io.IOException;
@@ -21,43 +23,70 @@ import static java.util.Collections.*;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 class RequestCaller {
+    public <T extends EntityResponse> void execute ( Call<T> call, CallHandler<T> handler ) {
+        call.enqueue(new Callback<T>() {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                Request request = call.request();
+                try {
+                    handler.succeeded(process(request, response));
+                }
+                catch (RegistryException e) {
+                    handler.failed(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable t) {
+                handler.failed(t);
+            }
+        });
+    }
+
     public <T extends EntityResponse> T execute ( Call<T> call ) {
         try {
             Request request = call.request();
             Response<T> response = call.execute();
-            Map<String, List<String>> headers = getHeaders(response);
-
-            if (response.isSuccessful()) {
-                validateApiVersion2(headers, request);
-                T entity = response.body();
-                assert entity != null : "Unexpected NULL body!";
-
-                entity.setHeaders(headers);
-                return entity;
-            }
-            else {
-                throw createFailedRequestException(request, response, headers);
-            }
+            return process(request, response);
         }
         catch (IOException e) {
             throw new RegistryIOException(e);
         }
     }
 
-    private FailedRequestException createFailedRequestException ( Request request, Response<?> response,
-                                                                  Map<String, List<String>> headers )
-            throws IOException {
-        ResponseBody body = response.errorBody();
-        List<Error> list = readErrorsFromJson(body != null ? body.string() : EMPTY);
-        ErrorsResponse errors = new ErrorsResponse(headers, list);
+    private <T extends EntityResponse> T process(Request request, Response<T> response) {
+        Map<String, List<String>> headers = getHeaders(response);
 
-        switch (response.code()) {
-            case 401:
-                return new UnauthorizedRequestException(request, errors);
-            case 404:
-                return new NotFoundRequestException(request, errors);
-            default:
-                return new FailedRequestException(request, response.code(), errors);
+        if (response.isSuccessful()) {
+            validateApiVersion2(headers, request);
+            T entity = response.body();
+            assert entity != null : "Unexpected NULL body!";
+
+            entity.setHeaders(headers);
+            return entity;
+        }
+        else {
+            throw failedRequestException(request, response, headers);
+        }
+    }
+
+    private FailedRequestException failedRequestException(Request request, Response<?> response,
+                                                          Map<String, List<String>> headers ) {
+        try {
+            ResponseBody body = response.errorBody();
+            List<Error> list = readErrorsFromJson(body != null ? body.string() : EMPTY);
+            ErrorsResponse errors = new ErrorsResponse(headers, list);
+
+            switch (response.code()) {
+                case 401:
+                    return new UnauthorizedRequestException(request, errors);
+                case 404:
+                    return new NotFoundRequestException(request, errors);
+                default:
+                    return new FailedRequestException(request, response.code(), errors);
+            }
+        } catch (IOException e) {
+            throw new RegistryIOException(e);
         }
     }
 
