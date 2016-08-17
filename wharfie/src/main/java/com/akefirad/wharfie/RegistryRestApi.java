@@ -1,7 +1,7 @@
 package com.akefirad.wharfie;
 
-import com.akefirad.wharfie.payloads.BaseResponse;
-import com.akefirad.wharfie.payloads.CatalogResponse;
+import com.akefirad.wharfie.payload.BaseResponse;
+import com.akefirad.wharfie.payload.CatalogResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

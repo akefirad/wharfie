@@ -1,9 +1,7 @@
-package com.akefirad.wharfie.utils;
+package com.akefirad.wharfie.util;
 
-import com.akefirad.wharfie.exceptions.FailedRequestException;
-import com.akefirad.wharfie.exceptions.IncompatibleApiException;
+import com.akefirad.wharfie.exception.IncompatibleApiException;
 import okhttp3.Request;
-import retrofit2.Response;
 
 import java.util.List;
 import java.util.Map;

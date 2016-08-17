@@ -1,7 +1,7 @@
 package com.akefirad.wharfie;
 
 import com.akefirad.wharfie.ApiConstants.Headers;
-import com.akefirad.wharfie.exceptions.InsufficientScopeException;
+import com.akefirad.wharfie.exception.InsufficientScopeException;
 import okhttp3.mockwebserver.MockWebServer;
 import org.json.JSONArray;
 import org.junit.*;

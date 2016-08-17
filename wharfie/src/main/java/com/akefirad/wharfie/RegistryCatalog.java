@@ -1,11 +1,10 @@
 package com.akefirad.wharfie;
 
-import com.akefirad.wharfie.utils.Asserts;
+import com.akefirad.wharfie.util.Asserts;
 
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 

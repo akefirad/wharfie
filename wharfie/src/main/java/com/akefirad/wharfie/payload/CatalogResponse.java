@@ -1,4 +1,4 @@
-package com.akefirad.wharfie.payloads;
+package com.akefirad.wharfie.payload;
 
 import java.util.*;
 

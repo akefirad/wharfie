@@ -1,6 +1,6 @@
-package com.akefirad.wharfie.exceptions;
+package com.akefirad.wharfie.exception;
 
-import com.akefirad.wharfie.payloads.ErrorsResponse;
+import com.akefirad.wharfie.payload.ErrorsResponse;
 import okhttp3.Request;
 
 /**

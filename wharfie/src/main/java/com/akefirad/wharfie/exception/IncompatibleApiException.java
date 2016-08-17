@@ -1,4 +1,4 @@
-package com.akefirad.wharfie.exceptions;
+package com.akefirad.wharfie.exception;
 
 /**
  * 404 HTTP Error

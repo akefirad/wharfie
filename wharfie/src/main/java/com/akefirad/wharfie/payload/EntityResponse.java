@@ -1,6 +1,6 @@
-package com.akefirad.wharfie.payloads;
+package com.akefirad.wharfie.payload;
 
-import com.akefirad.wharfie.utils.Asserts;
+import com.akefirad.wharfie.util.Asserts;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

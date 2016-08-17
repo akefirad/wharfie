@@ -1,6 +1,6 @@
-package com.akefirad.wharfie.utils;
+package com.akefirad.wharfie.util;
 
-import com.akefirad.wharfie.payloads.EntityResponse;
+import com.akefirad.wharfie.payload.EntityResponse;
 import retrofit2.Response;
 
 import java.net.MalformedURLException;

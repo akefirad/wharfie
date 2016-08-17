@@ -1,6 +1,6 @@
 package com.akefirad.wharfie;
 
-import com.akefirad.wharfie.exceptions.*;
+import com.akefirad.wharfie.exception.*;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.*;
 

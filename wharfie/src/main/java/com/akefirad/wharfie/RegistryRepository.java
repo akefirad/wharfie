@@ -1,12 +1,12 @@
 package com.akefirad.wharfie;
 
-import com.akefirad.wharfie.utils.Asserts;
+import com.akefirad.wharfie.util.Asserts;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static com.akefirad.wharfie.utils.Asserts.assertMatch;
+import static com.akefirad.wharfie.util.Asserts.assertMatch;
 
 public class RegistryRepository {
     private static final String SEGMENT_REGEX = "[a-z0-9]+(?:[._-][a-z0-9]+)*";

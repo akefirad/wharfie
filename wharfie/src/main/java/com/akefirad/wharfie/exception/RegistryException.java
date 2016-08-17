@@ -1,4 +1,4 @@
-package com.akefirad.wharfie.exceptions;
+package com.akefirad.wharfie.exception;
 
 /**
  * Base class of all exception thrown by this library

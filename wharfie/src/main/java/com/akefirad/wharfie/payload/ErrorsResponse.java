@@ -1,9 +1,9 @@
-package com.akefirad.wharfie.payloads;
+package com.akefirad.wharfie.payload;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.akefirad.wharfie.utils.Asserts.notBlank;
+import static com.akefirad.wharfie.util.Asserts.notBlank;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;

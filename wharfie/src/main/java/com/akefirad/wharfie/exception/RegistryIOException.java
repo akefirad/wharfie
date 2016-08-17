@@ -1,4 +1,4 @@
-package com.akefirad.wharfie.exceptions;
+package com.akefirad.wharfie.exception;
 
 /**
  * The Wrapper exception for IOException while working with

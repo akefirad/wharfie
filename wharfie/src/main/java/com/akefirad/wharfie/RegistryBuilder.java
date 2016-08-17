@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import static com.akefirad.wharfie.utils.Asserts.notNull;
+import static com.akefirad.wharfie.util.Asserts.notNull;
 
 public class RegistryBuilder {
     private String baseUrl;

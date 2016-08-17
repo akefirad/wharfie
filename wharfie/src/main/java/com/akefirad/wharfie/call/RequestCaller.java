@@ -1,14 +1,13 @@
-package com.akefirad.wharfie;
+package com.akefirad.wharfie.call;
 
-import com.akefirad.wharfie.exceptions.*;
-import com.akefirad.wharfie.payloads.EntityResponse;
-import com.akefirad.wharfie.payloads.ErrorsResponse;
-import com.akefirad.wharfie.payloads.ErrorsResponse.Error;
+import com.akefirad.wharfie.call.ResponseCallback;
+import com.akefirad.wharfie.exception.*;
+import com.akefirad.wharfie.payload.EntityResponse;
+import com.akefirad.wharfie.payload.ErrorsResponse;
+import com.akefirad.wharfie.payload.ErrorsResponse.Error;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 import org.json.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.*;
 
 import java.io.IOException;
@@ -17,28 +16,28 @@ import java.util.stream.StreamSupport;
 
 import static com.akefirad.wharfie.ApiConstants.ErrorCodes.INVALID_JSON_ERRORS;
 import static com.akefirad.wharfie.ApiConstants.Labels.*;
-import static com.akefirad.wharfie.utils.Asserts.validateApiVersion2;
-import static com.akefirad.wharfie.utils.WharfieUtils.getHeaders;
+import static com.akefirad.wharfie.util.Asserts.validateApiVersion2;
+import static com.akefirad.wharfie.util.WharfieUtils.getHeaders;
 import static java.util.Collections.*;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-class RequestCaller {
-    public <T extends EntityResponse> void execute ( Call<T> call, CallHandler<T> handler ) {
+public class RequestCaller {
+    public <T extends EntityResponse> void execute ( Call<T> call, ResponseCallback<T> callback ) {
         call.enqueue(new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
                 Request request = call.request();
                 try {
-                    handler.succeeded(process(request, response));
+                    callback.succeeded(processResponse(request, response));
                 }
                 catch (RegistryException e) {
-                    handler.failed(e);
+                    callback.failed(e);
                 }
             }
 
             @Override
             public void onFailure(Call<T> call, Throwable t) {
-                handler.failed(t);
+                callback.failed(new RegistryException(t));
             }
         });
     }
@@ -47,14 +46,14 @@ class RequestCaller {
         try {
             Request request = call.request();
             Response<T> response = call.execute();
-            return process(request, response);
+            return processResponse(request, response);
         }
         catch (IOException e) {
             throw new RegistryIOException(e);
         }
     }
 
-    private <T extends EntityResponse> T process(Request request, Response<T> response) {
+    private <T extends EntityResponse> T processResponse(Request request, Response<T> response) {
         Map<String, List<String>> headers = getHeaders(response);
 
         if (response.isSuccessful()) {
