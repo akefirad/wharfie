@@ -16,11 +16,11 @@ public class RegistryRepository {
 
     private final String name;
 
-    public RegistryRepository ( String name ) {
+    public RegistryRepository (String name) {
         this(new String[]{ name });
     }
 
-    public RegistryRepository ( String... names ) {
+    public RegistryRepository (String... names) {
         Asserts.notEmpty(names, "repositories");
 
         String name = buildRepositoryName(names);
@@ -33,7 +33,7 @@ public class RegistryRepository {
         return name;
     }
 
-    private String buildRepositoryName ( String[] names ) {
+    private String buildRepositoryName (String[] names) {
         List<String> list = new ArrayList<>(names.length);
         Arrays.stream(names)
                 .filter(name -> name != null && !name.isEmpty())

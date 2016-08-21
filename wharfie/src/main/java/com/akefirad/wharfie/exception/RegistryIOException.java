@@ -5,7 +5,7 @@ package com.akefirad.wharfie.exception;
  * the streams of requests and responses.
  */
 public class RegistryIOException extends RegistryException {
-    public RegistryIOException ( Throwable cause ) {
+    public RegistryIOException (Throwable cause) {
         super(cause);
     }
 }

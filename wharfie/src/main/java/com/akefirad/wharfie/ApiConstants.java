@@ -1,6 +1,14 @@
 package com.akefirad.wharfie;
 
 public interface ApiConstants {
+    interface Statuses {
+        int SUCCESS = 200;
+        int CREATED = 201;
+        int NOT_FOUND = 404;
+        int UNAUTHORIZED = 401;
+        int INTERNAL_ERROR = 500;
+    }
+
     interface Headers {
         // Names
         String DOCKER_DISTRIBUTION_API_VERSION = "Docker-Distribution-API-Version".toLowerCase();
@@ -22,6 +30,7 @@ public interface ApiConstants {
     }
 
     interface Labels {
+        String REPOSITORIES = "repositories";
         String ERRORS = "errors";
         String CODE = "code";
         String MESSAGE = "message";
@@ -29,6 +38,7 @@ public interface ApiConstants {
     }
 
     interface ErrorCodes {
+        String UNAUTHORIZED = "UNAUTHORIZED";
         String INVALID_JSON_ERRORS = "INVALID_JSON_ERRORS";
     }
 }

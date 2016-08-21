@@ -20,22 +20,22 @@ public class RegistryBuilder {
         factories = new ArrayList<>();
     }
 
-    public RegistryBuilder baseUrl ( String baseUrl ) {
+    public RegistryBuilder baseUrl (String baseUrl) {
         this.baseUrl = baseUrl;
         return this;
     }
 
-    public RegistryBuilder client ( OkHttpClient client ) {
+    public RegistryBuilder client (OkHttpClient client) {
         this.client = client;
         return this;
     }
 
-    public RegistryBuilder executor ( Executor executor ) {
+    public RegistryBuilder executor (Executor executor) {
         this.executor = executor;
         return this;
     }
 
-    public RegistryBuilder addConverterFactory ( Converter.Factory factory ) {
+    public RegistryBuilder addConverterFactory (Converter.Factory factory) {
         this.factories.add(factory);
         return this;
     }

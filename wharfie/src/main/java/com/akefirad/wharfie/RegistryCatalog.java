@@ -13,7 +13,7 @@ public class RegistryCatalog extends RegistryEntity implements Iterable<Registry
     private RegistryRepository last;
     private final List<RegistryRepository> repositories;
 
-    public RegistryCatalog ( RegistryBase parent, int number, String last, List<String> repositories ) {
+    public RegistryCatalog (RegistryBase parent, int number, String last, List<String> repositories) {
         super(parent);
 
         Asserts.notNull(repositories, "repositories");
@@ -45,7 +45,6 @@ public class RegistryCatalog extends RegistryEntity implements Iterable<Registry
         return new CatalogIterator();
     }
 
-    //TODO: Review for thread-safety
     private class CatalogIterator implements Iterator<RegistryRepository> {
         private Iterator<RegistryRepository> iterator = repositories.iterator();
 

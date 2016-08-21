@@ -15,27 +15,24 @@ import static com.akefirad.wharfie.ApiConstants.Headers.INSUFFICIENT_SCOPE;
 import static com.akefirad.wharfie.ApiConstants.Headers.WWW_AUTHENTICATE;
 import static com.akefirad.wharfie.ApiConstants.Urls.QUERY_LAST;
 import static com.akefirad.wharfie.ApiConstants.Urls.QUERY_NUMBER;
-import static com.akefirad.wharfie.util.Asserts.notBlank;
-import static com.akefirad.wharfie.util.Asserts.assertThat;
-import static com.akefirad.wharfie.util.Asserts.notNull;
-import static com.akefirad.wharfie.util.WharfieUtils.readHeader;
-import static com.akefirad.wharfie.util.WharfieUtils.tryParseInt;
-import static com.akefirad.wharfie.util.WharfieUtils.tryParseUrl;
+import static com.akefirad.wharfie.util.Asserts.*;
+import static com.akefirad.wharfie.util.WharfieUtils.*;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.*;
 
 public class RegistryBase extends RegistryEntity {
     private static final Logger logger = LoggerFactory.getLogger(RegistryBase.class);
 
     public static final Pattern LINK_PATTERN =
-            Pattern.compile("<[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]>; rel=\"next\"");
+            compile("<[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]>; rel=\"next\"");
 
     private final DockerRegistry registry;
     private final String version;
 
-    public RegistryBase ( DockerRegistry registry, String version ) {
+    public RegistryBase (DockerRegistry registry, String version) {
         super(null);
 
         notNull(registry, "registry");
@@ -55,12 +52,12 @@ public class RegistryBase extends RegistryEntity {
     }
 
     //-----------------------------------------------------------------------------------
-    public RegistryCatalog getCatalog ( int count ) throws RegistryException {
+    public RegistryCatalog getCatalog (int count) throws RegistryException {
         return this.getCatalog(count, null);
     }
 
     //-----------------------------------------------------------------------------------
-    public RegistryCatalog getCatalog ( int count, RegistryRepository last ) throws RegistryException {
+    public RegistryCatalog getCatalog (int count, RegistryRepository last) throws RegistryException {
         DockerRegistry registry = getRegistry();
         try {
             String lastRepository = ofNullable(last).map(RegistryRepository::getName).orElse(EMPTY);
@@ -69,9 +66,11 @@ public class RegistryBase extends RegistryEntity {
 
             // Extracting "next" link information
             Map<String, List<String>> headers = response.getHeaders();
-            String link = ofNullable(headers.get(Headers.LINK)).orElse(emptyList()).stream()
+            String link = ofNullable(headers.get(Headers.LINK))
+                    .orElse(emptyList()).stream()
                     .filter(value -> LINK_PATTERN.matcher(value).matches())
-                    .findAny().orElse(EMPTY);
+                    .findAny()
+                    .orElse(EMPTY);
 
             Map<String, String> queries = new LinkedHashMap<>();
             queries.put(QUERY_NUMBER, "0");
@@ -87,7 +86,8 @@ public class RegistryBase extends RegistryEntity {
                                     queries.put(parts[0], parts[1]);
                                 }));
             }
-            return new RegistryCatalog(this, tryParseInt(queries.get(QUERY_NUMBER)).orElse(0),
+            return new RegistryCatalog(this,
+                    tryParseInt(queries.get(QUERY_NUMBER)).orElse(0),
                     queries.get(QUERY_LAST), response.getRepositories());
         }
         catch (UnauthorizedRequestException e) {
@@ -103,7 +103,7 @@ public class RegistryBase extends RegistryEntity {
         return registry;
     }
 
-    private boolean isInsufficientScopeError ( ErrorsResponse errors ) {
+    private boolean isInsufficientScopeError (ErrorsResponse errors) {
         return readHeader(errors.getHeaders(), WWW_AUTHENTICATE).stream()
                 .anyMatch(value -> value.contains(INSUFFICIENT_SCOPE));
     }

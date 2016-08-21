@@ -1,12 +1,17 @@
 package com.akefirad.wharfie;
 
 import com.akefirad.wharfie.exception.*;
+import com.akefirad.wharfie.payload.ErrorsResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.*;
 
+import java.util.List;
+
+import static com.akefirad.wharfie.ApiConstants.Statuses.*;
 import static com.akefirad.wharfie.TestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class RegistryBaseTest {
     private MockWebServer server;
@@ -25,7 +30,7 @@ public class RegistryBaseTest {
 
     @Test
     public void getBase200Test () throws Exception {
-        server.enqueue(newResponse("{}"));
+        server.enqueue(newResponse(BASE));
 
         RegistryBase base = registry.getBase();
 
@@ -35,36 +40,43 @@ public class RegistryBaseTest {
 
     @Test
     public void getBase401Test () throws Exception {
-        server.enqueue(newResponse(401, "{\"errors\":[{\"code\":\"UNAUTHORIZED\"," +
-                "\"message\":\"authentication required\",\"detail\":null}]}"));
+        server.enqueue(newResponse(UNAUTHORIZED, "{\"errors\":[{\"code\":" +
+                "\"UNAUTHORIZED\",\"message\":\"authentication required\"," +
+                "\"detail\":null}]}"));
         try {
             RegistryBase base = registry.getBase();
+            fail("Expecting UnauthorizedRequestException!");
         }
         catch (UnauthorizedRequestException e) {
-            assertThat(e.getErrors().list().size(), is(1));
-            assertThat(e.getErrors().list().get(0).getCode(), equalTo("UNAUTHORIZED"));
-            assertThat(e.getErrors().list().get(0).getMessage(), equalTo("authentication required"));
-            assertThat(e.getErrors().list().get(0).getDetail(), equalTo("null"));
+            List<ErrorsResponse.Error> errors = e.getErrors().list();
+            assertThat(errors.size(), is(1));
+            assertThat(errors.get(0).getCode(), equalTo("UNAUTHORIZED"));
+            assertThat(errors.get(0).getMessage(), equalTo("authentication required"));
+            assertThat(errors.get(0).getDetail(), equalTo("null"));
         }
     }
 
     @Test
     public void getBase404Test () throws Exception {
-        server.enqueue(newResponse(404, "{}"));
+        server.enqueue(newResponse(NOT_FOUND, EMPTY_JSON));
 
         try {
             RegistryBase base = registry.getBase();
+            fail("Expecting IncompatibleApiException!");
         }
-        catch (IncompatibleApiException ignored) {
+        catch (IncompatibleApiException e) {
+            assertThat(e.getMessage(),
+                    containsString("does not support REST API Version 2!"));
         }
     }
 
     @Test
     public void getBase500Test () throws Exception {
-        server.enqueue(newResponse(500, "INVALID BODY"));
+        server.enqueue(newResponse(INTERNAL_ERROR, "Internal Error"));
 
         try {
             RegistryBase base = registry.getBase();
+            fail("Expecting FailedRequestException!");
         }
         catch (FailedRequestException e) {
             assertThat(e.getErrors().list().size(), is(1));
@@ -77,8 +89,9 @@ public class RegistryBaseTest {
 
         try {
             RegistryBase base = registry.getBase();
+            fail("Expecting RegistryIOException!");
         }
-        catch (RegistryIOException e) {
+        catch (RegistryIOException ignored) {
         }
     }
 }

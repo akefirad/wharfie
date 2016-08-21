@@ -19,24 +19,24 @@ public class EntityResponse {
         this(emptyMap());
     }
 
-    public EntityResponse ( Map<String, List<String>> headers ) {
+    public EntityResponse (Map<String, List<String>> headers) {
         Asserts.notNull(headers, "headers");
 
         this.headers = new LinkedHashMap<>();
-        headers.forEach(( key, values ) -> this.headers.put(key, new ArrayList<>(values)));
+        headers.forEach((key, values) -> this.headers.put(key, new ArrayList<>(values)));
     }
 
     public Map<String, List<String>> getHeaders () {
         Map<String, List<String>> map = new LinkedHashMap<>();
         ofNullable(headers).orElse(emptyMap())
-                .forEach(( key, values ) -> map.put(key, new ArrayList<>(values)));
+                .forEach((key, values) -> map.put(key, new ArrayList<>(values)));
         return map;
     }
 
-    public void setHeaders ( Map<String, List<String>> headers ) {
+    public void setHeaders (Map<String, List<String>> headers) {
         this.headers = new LinkedHashMap<>();
         ofNullable(headers).orElse(emptyMap())
-                .forEach(( key, values ) -> this.headers.put(key, new ArrayList<>(values)));
+                .forEach((key, values) -> this.headers.put(key, new ArrayList<>(values)));
     }
 
     @Override

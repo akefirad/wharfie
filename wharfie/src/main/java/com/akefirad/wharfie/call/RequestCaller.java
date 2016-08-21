@@ -1,6 +1,5 @@
 package com.akefirad.wharfie.call;
 
-import com.akefirad.wharfie.call.ResponseCallback;
 import com.akefirad.wharfie.exception.*;
 import com.akefirad.wharfie.payload.EntityResponse;
 import com.akefirad.wharfie.payload.ErrorsResponse;
@@ -18,14 +17,15 @@ import static com.akefirad.wharfie.ApiConstants.ErrorCodes.INVALID_JSON_ERRORS;
 import static com.akefirad.wharfie.ApiConstants.Labels.*;
 import static com.akefirad.wharfie.util.Asserts.validateApiVersion2;
 import static com.akefirad.wharfie.util.WharfieUtils.getHeaders;
-import static java.util.Collections.*;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class RequestCaller {
-    public <T extends EntityResponse> void execute ( Call<T> call, ResponseCallback<T> callback ) {
+    public <T extends EntityResponse> void execute (Call<T> call, ResponseCallback<T> callback) {
         call.enqueue(new Callback<T>() {
             @Override
-            public void onResponse(Call<T> call, Response<T> response) {
+            public void onResponse (Call<T> call, Response<T> response) {
                 Request request = call.request();
                 try {
                     callback.succeeded(processResponse(request, response));
@@ -36,13 +36,13 @@ public class RequestCaller {
             }
 
             @Override
-            public void onFailure(Call<T> call, Throwable t) {
+            public void onFailure (Call<T> call, Throwable t) {
                 callback.failed(new RegistryException(t));
             }
         });
     }
 
-    public <T extends EntityResponse> T execute ( Call<T> call ) {
+    public <T extends EntityResponse> T execute (Call<T> call) {
         try {
             Request request = call.request();
             Response<T> response = call.execute();
@@ -53,7 +53,7 @@ public class RequestCaller {
         }
     }
 
-    private <T extends EntityResponse> T processResponse(Request request, Response<T> response) {
+    private <T extends EntityResponse> T processResponse (Request request, Response<T> response) {
         Map<String, List<String>> headers = getHeaders(response);
 
         if (response.isSuccessful()) {
@@ -69,8 +69,8 @@ public class RequestCaller {
         }
     }
 
-    private FailedRequestException failedRequestException(Request request, Response<?> response,
-                                                          Map<String, List<String>> headers ) {
+    private FailedRequestException failedRequestException (Request request, Response<?> response,
+                                                           Map<String, List<String>> headers) {
         try {
             ResponseBody body = response.errorBody();
             List<Error> list = readErrorsFromJson(body != null ? body.string() : EMPTY);
@@ -84,12 +84,13 @@ public class RequestCaller {
                 default:
                     return new FailedRequestException(request, response.code(), errors);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RegistryIOException(e);
         }
     }
 
-    private List<Error> readErrorsFromJson ( String string ) {
+    private List<Error> readErrorsFromJson (String string) {
         try {
             JSONObject json = new JSONObject(string);
             JSONArray array = json.getJSONArray(ERRORS);

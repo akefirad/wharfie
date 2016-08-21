@@ -11,7 +11,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 public interface WharfieUtils {
-    static Optional<URL> tryParseUrl ( String string ) {
+    static Optional<URL> tryParseUrl (String string) {
         Asserts.notNull(string, "string");
 
         try {
@@ -22,7 +22,7 @@ public interface WharfieUtils {
         }
     }
 
-    static Optional<Integer> tryParseInt ( String string ) {
+    static Optional<Integer> tryParseInt (String string) {
         Asserts.notNull(string, "string");
 
         try {
@@ -34,7 +34,7 @@ public interface WharfieUtils {
     }
 
     static <T extends EntityResponse> Map<String, List<String>> getHeaders (
-            Response<T> response ) {
+            Response<T> response) {
         Map<String, List<String>> headers = new LinkedHashMap<>();
         response.headers()
                 .toMultimap()

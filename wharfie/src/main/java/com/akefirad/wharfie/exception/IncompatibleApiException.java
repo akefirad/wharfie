@@ -6,7 +6,7 @@ package com.akefirad.wharfie.exception;
  * when the registry is not supporting version 2 (supported by this library).
  */
 public class IncompatibleApiException extends RegistryException {
-    public IncompatibleApiException ( String baseUrl ) {
+    public IncompatibleApiException (String baseUrl) {
         super(baseUrl + " does not support REST API Version 2!");
     }
 }

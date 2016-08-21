@@ -11,14 +11,14 @@ public class FailedRequestException extends RegistryException {
     private final int code;
     private final ErrorsResponse errors;
 
-    public FailedRequestException ( String message, int code, ErrorsResponse errors ) {
+    public FailedRequestException (String message, int code, ErrorsResponse errors) {
         super(message);
 
         this.code = code;
         this.errors = errors.copy();
     }
 
-    public FailedRequestException ( Request request, int code, ErrorsResponse errors ) {
+    public FailedRequestException (Request request, int code, ErrorsResponse errors) {
         super("Failed request: " + request.url());
 
         this.code = code;

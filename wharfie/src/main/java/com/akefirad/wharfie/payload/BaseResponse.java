@@ -16,7 +16,7 @@ public class BaseResponse extends EntityResponse {
         return version;
     }
 
-    public void setVersion ( String version ) {
+    public void setVersion (String version) {
         notBlank(version, "version");
 
         this.version = version;

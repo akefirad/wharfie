@@ -16,7 +16,7 @@ public class ErrorsResponse extends EntityResponse {
 
     private List<Error> list;
 
-    public ErrorsResponse ( Map<String, List<String>> headers, List<Error> list ) {
+    public ErrorsResponse (Map<String, List<String>> headers, List<Error> list) {
         super(headers);
         this.list = list.stream().map(Error::copy).collect(toList());
     }
@@ -34,7 +34,7 @@ public class ErrorsResponse extends EntityResponse {
         private String message = "";
         private String detail = "";
 
-        public Error ( String code, String message, String detail ) {
+        public Error (String code, String message, String detail) {
             notBlank(code, "code");
             notBlank(message, "message");
 

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public abstract class RegistryEntity {
     private final RegistryEntity parent;
 
-    public RegistryEntity ( RegistryEntity parent ) {
+    public RegistryEntity (RegistryEntity parent) {
         this.parent = parent;
     }
 

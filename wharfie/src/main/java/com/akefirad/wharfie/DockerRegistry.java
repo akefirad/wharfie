@@ -1,8 +1,6 @@
 package com.akefirad.wharfie;
 
-import com.akefirad.wharfie.call.BaseCallback;
-import com.akefirad.wharfie.call.RequestCaller;
-import com.akefirad.wharfie.call.ResponseCallback;
+import com.akefirad.wharfie.call.*;
 import com.akefirad.wharfie.exception.*;
 import com.akefirad.wharfie.payload.BaseResponse;
 import org.slf4j.Logger;
@@ -18,7 +16,7 @@ public class DockerRegistry {
     private final RegistryRestApi registryRestApi;
     private final RequestCaller requestCaller;
 
-    public DockerRegistry ( Retrofit retrofit ) {
+    public DockerRegistry (Retrofit retrofit) {
         notNull(retrofit, "retrofit");
 
         this.retrofit = retrofit;
@@ -42,19 +40,19 @@ public class DockerRegistry {
         DockerRegistry registry = this;
         getRequestCaller().execute(registryRestApi.getBase(), new ResponseCallback<BaseResponse>() {
             @Override
-            public void succeeded(BaseResponse response) {
+            public void succeeded (BaseResponse response) {
                 callback.succeeded(processResponse(registry, getRequestCaller().execute(registryRestApi.getBase())));
             }
 
             @Override
-            public void failed(RegistryException exception) {
+            public void failed (RegistryException exception) {
                 callback.failed(exception);
             }
         });
     }
 
     //-----------------------------------------------------------------------------------
-    private RegistryBase processResponse(DockerRegistry registry, BaseResponse base) {
+    private RegistryBase processResponse (DockerRegistry registry, BaseResponse base) {
         return new RegistryBase(registry, base.getVersion());
     }
 

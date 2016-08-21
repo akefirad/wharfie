@@ -14,8 +14,8 @@ public interface RegistryRestApi {
     Call<CatalogResponse> getCatalog ();
 
     @GET ("v2/_catalog")
-    Call<CatalogResponse> getCatalog ( @Query ("n") int count );
+    Call<CatalogResponse> getCatalog (@Query ("n") int count);
 
     @GET ("v2/_catalog")
-    Call<CatalogResponse> getCatalog ( @Query ("n") int count, @Query ("last") String last );
+    Call<CatalogResponse> getCatalog (@Query ("n") int count, @Query ("last") String last);
 }

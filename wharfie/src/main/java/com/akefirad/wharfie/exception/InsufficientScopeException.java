@@ -9,11 +9,11 @@ import okhttp3.Request;
  * and the response body indicates "insufficient_scope" as error
  */
 public class InsufficientScopeException extends UnauthorizedRequestException {
-    public InsufficientScopeException ( String message, ErrorsResponse errors ) {
+    public InsufficientScopeException (String message, ErrorsResponse errors) {
         super(message, errors);
     }
 
-    public InsufficientScopeException ( Request request, ErrorsResponse errors ) {
+    public InsufficientScopeException (Request request, ErrorsResponse errors) {
         super(request, errors);
     }
 }
