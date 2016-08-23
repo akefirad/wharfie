@@ -12,7 +12,8 @@ import static java.util.stream.Collectors.toList;
  * Errors response payload
  */
 public class ErrorsResponse extends EntityResponse {
-    public static final ErrorsResponse NO_ERROR = new ErrorsResponse(emptyMap(), emptyList());
+    public static final ErrorsResponse NO_ERROR =
+            new ErrorsResponse(emptyMap(), emptyList());
 
     private List<Error> list;
 

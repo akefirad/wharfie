@@ -31,6 +31,7 @@ public interface ApiConstants {
 
     interface Labels {
         String REPOSITORIES = "repositories";
+        String NAME = "name";
         String ERRORS = "errors";
         String CODE = "code";
         String MESSAGE = "message";

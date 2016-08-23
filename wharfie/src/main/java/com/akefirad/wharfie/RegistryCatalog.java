@@ -8,19 +8,23 @@ import java.util.List;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
-public class RegistryCatalog extends RegistryEntity implements Iterable<RegistryRepository> {
+public class RegistryCatalog extends RegistryEntity
+        implements Iterable<RegistryRepository> {
     private int number;
     private RegistryRepository last;
     private final List<RegistryRepository> repositories;
 
-    public RegistryCatalog (RegistryBase parent, int number, String last, List<String> repositories) {
+    public RegistryCatalog (RegistryBase parent, int number,
+                            String last, List<String> repositories) {
         super(parent);
 
         Asserts.notNull(repositories, "repositories");
 
         this.number = number;
         this.last = last != null ? new RegistryRepository(last) : null;
-        this.repositories = repositories.stream().map(RegistryRepository::new).collect(toList());
+        this.repositories = repositories.stream()
+                .map(RegistryRepository::new)
+                .collect(toList());
     }
 
     public List<RegistryRepository> getRepositories () {

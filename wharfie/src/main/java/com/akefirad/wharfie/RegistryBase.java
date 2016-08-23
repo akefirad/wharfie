@@ -1,6 +1,7 @@
 package com.akefirad.wharfie;
 
 import com.akefirad.wharfie.ApiConstants.Headers;
+import com.akefirad.wharfie.call.RequestHandler;
 import com.akefirad.wharfie.exception.*;
 import com.akefirad.wharfie.payload.CatalogResponse;
 import com.akefirad.wharfie.payload.ErrorsResponse;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 
 import static com.akefirad.wharfie.ApiConstants.Headers.INSUFFICIENT_SCOPE;
 import static com.akefirad.wharfie.ApiConstants.Headers.WWW_AUTHENTICATE;
+import static com.akefirad.wharfie.ApiConstants.Statuses.UNAUTHORIZED;
 import static com.akefirad.wharfie.ApiConstants.Urls.QUERY_LAST;
 import static com.akefirad.wharfie.ApiConstants.Urls.QUERY_NUMBER;
 import static com.akefirad.wharfie.util.Asserts.*;
@@ -57,12 +59,13 @@ public class RegistryBase extends RegistryEntity {
     }
 
     //-----------------------------------------------------------------------------------
-    public RegistryCatalog getCatalog (int count, RegistryRepository last) throws RegistryException {
-        DockerRegistry registry = getRegistry();
+    public RegistryCatalog getCatalog (int count, RegistryRepository last)
+            throws RegistryException {
         try {
-            String lastRepository = ofNullable(last).map(RegistryRepository::getName).orElse(EMPTY);
-            Call<CatalogResponse> catalog = registry.getRegistryRestApi().getCatalog(count, lastRepository);
-            CatalogResponse response = registry.getRequestHandler().execute(catalog);
+            DockerRegistry registry = getRegistry();
+            String name = last == null ? EMPTY : last.getName();
+            CatalogResponse response = registry.getRequestHandler()
+                    .execute(registry.getRegistryRestApi().getCatalog(count, name));
 
             // Extracting "next" link information
             Map<String, List<String>> headers = response.getHeaders();
@@ -77,8 +80,8 @@ public class RegistryBase extends RegistryEntity {
             queries.put(QUERY_LAST, null);
             if (!link.isEmpty()) {
                 //TODO: Re-implement the following using regex!
-                String string = substringBefore(substringAfter(link, "<"), ">");
-                tryParseUrl(string.startsWith("/") ? "http://localhost/" + string : string)
+                String str = substringBefore(substringAfter(link, "<"), ">");
+                tryParseUrl(str.startsWith("/") ? "http://localhost/" + str : str)
                         .ifPresent(u -> stream(split(u.getQuery(), "&"))
                                 .forEach(query -> {
                                     String[] parts = split(query, "=");
@@ -92,7 +95,7 @@ public class RegistryBase extends RegistryEntity {
         }
         catch (UnauthorizedRequestException e) {
             // See http://goo.gl/J1qAjt
-            throw e.getCode() == 401 && isInsufficientScopeError(e.getErrors()) ?
+            throw e.getCode() == UNAUTHORIZED && isInsufficientScopeError(e.getErrors()) ?
                     new InsufficientScopeException(registry.toString(), e.getErrors()) : e;
         }
     }

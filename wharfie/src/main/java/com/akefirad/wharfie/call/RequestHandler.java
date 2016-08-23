@@ -15,6 +15,8 @@ import java.util.stream.StreamSupport;
 
 import static com.akefirad.wharfie.ApiConstants.ErrorCodes.INVALID_JSON_ERRORS;
 import static com.akefirad.wharfie.ApiConstants.Labels.*;
+import static com.akefirad.wharfie.ApiConstants.Statuses.NOT_FOUND;
+import static com.akefirad.wharfie.ApiConstants.Statuses.UNAUTHORIZED;
 import static com.akefirad.wharfie.util.Asserts.validateApiVersion2;
 import static com.akefirad.wharfie.util.WharfieUtils.getHeaders;
 import static java.util.Collections.singletonList;
@@ -22,12 +24,13 @@ import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class RequestHandler {
-    public <T extends EntityResponse> void execute (Call<T> call, ResponseCallback<T> callback) {
+    public <T extends EntityResponse> void execute (Call<T> call,
+                                                    ResponseCallback<T> callback) {
         call.enqueue(new Callback<T>() {
             @Override
             public void onResponse (Call<T> call, Response<T> response) {
-                Request request = call.request();
                 try {
+                    Request request = call.request();
                     callback.succeeded(processResponse(request, response));
                 }
                 catch (RegistryException e) {
@@ -53,9 +56,9 @@ public class RequestHandler {
         }
     }
 
-    private <T extends EntityResponse> T processResponse (Request request, Response<T> response) {
+    private <T extends EntityResponse> T processResponse (Request request,
+                                                          Response<T> response) {
         Map<String, List<String>> headers = getHeaders(response);
-
         if (response.isSuccessful()) {
             validateApiVersion2(headers, request);
             T entity = response.body();
@@ -69,17 +72,17 @@ public class RequestHandler {
         }
     }
 
-    private FailedRequestException failedRequestException (Request request, Response<?> response,
-                                                           Map<String, List<String>> headers) {
+    private FailedRequestException failedRequestException (
+            Request request, Response<?> response, Map<String, List<String>> headers) {
         try {
             ResponseBody body = response.errorBody();
             List<Error> list = readErrorsFromJson(body != null ? body.string() : EMPTY);
             ErrorsResponse errors = new ErrorsResponse(headers, list);
 
             switch (response.code()) {
-                case 401:
+                case UNAUTHORIZED:
                     return new UnauthorizedRequestException(request, errors);
-                case 404:
+                case NOT_FOUND:
                     return new NotFoundRequestException(request, errors);
                 default:
                     return new FailedRequestException(request, response.code(), errors);

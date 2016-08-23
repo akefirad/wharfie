@@ -12,8 +12,4 @@ public class InsufficientScopeException extends UnauthorizedRequestException {
     public InsufficientScopeException (String message, ErrorsResponse errors) {
         super(message, errors);
     }
-
-    public InsufficientScopeException (Request request, ErrorsResponse errors) {
-        super(request, errors);
-    }
 }

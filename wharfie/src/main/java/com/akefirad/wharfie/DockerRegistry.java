@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
 
+import static com.akefirad.wharfie.ApiConstants.Statuses.NOT_FOUND;
 import static com.akefirad.wharfie.util.Asserts.notNull;
 
 public class DockerRegistry {
@@ -27,10 +28,11 @@ public class DockerRegistry {
     //-----------------------------------------------------------------------------------
     public RegistryBase getBase () throws RegistryException {
         try {
-            return processResponse(getRequestHandler().execute(registryRestApi.getBase()));
+            BaseResponse base = getRequestHandler().execute(registryRestApi.getBase());
+            return processResponse(base);
         }
         catch (FailedRequestException e) {
-            throw (e.getCode() != 404) ? e :
+            throw (e.getCode() != NOT_FOUND) ? e :
                     new IncompatibleApiException(retrofit.baseUrl().url().toString());
         }
     }
@@ -38,17 +40,18 @@ public class DockerRegistry {
     //-----------------------------------------------------------------------------------
     public <T extends RegistryBase> void getBase (EntityCallback<RegistryBase> callback)
             throws RegistryException {
-        getRequestHandler().execute(registryRestApi.getBase(), new ResponseCallback<BaseResponse>() {
-            @Override
-            public void succeeded (BaseResponse response) {
-                callback.succeeded(processResponse(getRequestHandler().execute(registryRestApi.getBase())));
-            }
+        getRequestHandler().execute(registryRestApi.getBase(),
+                new ResponseCallback<BaseResponse>() {
+                    @Override
+                    public void succeeded (BaseResponse response) {
+                        callback.succeeded(processResponse(response));
+                    }
 
-            @Override
-            public void failed (RegistryException exception) {
-                callback.failed(exception);
-            }
-        });
+                    @Override
+                    public void failed (RegistryException exception) {
+                        callback.failed(exception);
+                    }
+                });
     }
 
     //-----------------------------------------------------------------------------------
