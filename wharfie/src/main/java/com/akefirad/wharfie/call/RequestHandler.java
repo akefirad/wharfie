@@ -21,7 +21,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-public class RequestCaller {
+public class RequestHandler {
     public <T extends EntityResponse> void execute (Call<T> call, ResponseCallback<T> callback) {
         call.enqueue(new Callback<T>() {
             @Override

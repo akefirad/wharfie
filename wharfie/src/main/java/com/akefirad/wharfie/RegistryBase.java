@@ -62,7 +62,7 @@ public class RegistryBase extends RegistryEntity {
         try {
             String lastRepository = ofNullable(last).map(RegistryRepository::getName).orElse(EMPTY);
             Call<CatalogResponse> catalog = registry.getRegistryRestApi().getCatalog(count, lastRepository);
-            CatalogResponse response = registry.getRequestCaller().execute(catalog);
+            CatalogResponse response = registry.getRequestHandler().execute(catalog);
 
             // Extracting "next" link information
             Map<String, List<String>> headers = response.getHeaders();

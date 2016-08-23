@@ -14,20 +14,20 @@ public class DockerRegistry {
 
     private final Retrofit retrofit;
     private final RegistryRestApi registryRestApi;
-    private final RequestCaller requestCaller;
+    private final RequestHandler requestHandler;
 
     public DockerRegistry (Retrofit retrofit) {
         notNull(retrofit, "retrofit");
 
         this.retrofit = retrofit;
         this.registryRestApi = retrofit.create(RegistryRestApi.class);
-        this.requestCaller = new RequestCaller();
+        this.requestHandler = new RequestHandler();
     }
 
     //-----------------------------------------------------------------------------------
     public RegistryBase getBase () throws RegistryException {
         try {
-            return processResponse(this, getRequestCaller().execute(registryRestApi.getBase()));
+            return processResponse(this, getRequestHandler().execute(registryRestApi.getBase()));
         }
         catch (FailedRequestException e) {
             throw (e.getCode() != 404) ? e :
@@ -38,10 +38,10 @@ public class DockerRegistry {
     //-----------------------------------------------------------------------------------
     public <T extends RegistryBase> void getBase (BaseCallback callback) throws RegistryException {
         DockerRegistry registry = this;
-        getRequestCaller().execute(registryRestApi.getBase(), new ResponseCallback<BaseResponse>() {
+        getRequestHandler().execute(registryRestApi.getBase(), new ResponseCallback<BaseResponse>() {
             @Override
             public void succeeded (BaseResponse response) {
-                callback.succeeded(processResponse(registry, getRequestCaller().execute(registryRestApi.getBase())));
+                callback.succeeded(processResponse(registry, getRequestHandler().execute(registryRestApi.getBase())));
             }
 
             @Override
@@ -63,8 +63,8 @@ public class DockerRegistry {
     }
 
     //-----------------------------------------------------------------------------------
-    RequestCaller getRequestCaller () {
-        return requestCaller;
+    RequestHandler getRequestHandler () {
+        return requestHandler;
     }
 
     //-----------------------------------------------------------------------------------
