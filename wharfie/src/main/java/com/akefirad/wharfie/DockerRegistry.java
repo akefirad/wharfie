@@ -27,7 +27,7 @@ public class DockerRegistry {
     //-----------------------------------------------------------------------------------
     public RegistryBase getBase () throws RegistryException {
         try {
-            return processResponse(this, getRequestHandler().execute(registryRestApi.getBase()));
+            return processResponse(getRequestHandler().execute(registryRestApi.getBase()));
         }
         catch (FailedRequestException e) {
             throw (e.getCode() != 404) ? e :
@@ -38,11 +38,10 @@ public class DockerRegistry {
     //-----------------------------------------------------------------------------------
     public <T extends RegistryBase> void getBase (EntityCallback<RegistryBase> callback)
             throws RegistryException {
-        DockerRegistry registry = this;
         getRequestHandler().execute(registryRestApi.getBase(), new ResponseCallback<BaseResponse>() {
             @Override
             public void succeeded (BaseResponse response) {
-                callback.succeeded(processResponse(registry, getRequestHandler().execute(registryRestApi.getBase())));
+                callback.succeeded(processResponse(getRequestHandler().execute(registryRestApi.getBase())));
             }
 
             @Override
@@ -53,8 +52,8 @@ public class DockerRegistry {
     }
 
     //-----------------------------------------------------------------------------------
-    private RegistryBase processResponse (DockerRegistry registry, BaseResponse base) {
-        return new RegistryBase(registry, base.getVersion());
+    private RegistryBase processResponse (BaseResponse base) {
+        return new RegistryBase(this, base.getVersion());
     }
 
     //-----------------------------------------------------------------------------------
