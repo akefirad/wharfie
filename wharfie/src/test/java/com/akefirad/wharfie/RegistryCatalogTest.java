@@ -60,7 +60,7 @@ public class RegistryCatalogTest {
     }
 
     @Test
-    public void getCatalog200Empty1Test () throws Exception {
+    public void getCatalog200EmptyBodyTest () throws Exception {
         server.enqueue(newResponse(BASE));
         server.enqueue(newResponse(EMPTY_JSON));
 
@@ -69,7 +69,7 @@ public class RegistryCatalogTest {
     }
 
     @Test
-    public void getCatalog200Empty2Test () throws Exception {
+    public void getCatalog200EmptyListTest () throws Exception {
         Set<String> names = new HashSet<>();
         Repositories repositories = newRepositories(names);
 
