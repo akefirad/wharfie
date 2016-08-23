@@ -36,7 +36,8 @@ public class DockerRegistry {
     }
 
     //-----------------------------------------------------------------------------------
-    public <T extends RegistryBase> void getBase (BaseCallback callback) throws RegistryException {
+    public <T extends RegistryBase> void getBase (EntityCallback<RegistryBase> callback)
+            throws RegistryException {
         DockerRegistry registry = this;
         getRequestHandler().execute(registryRestApi.getBase(), new ResponseCallback<BaseResponse>() {
             @Override
